@@ -13,3 +13,6 @@ class StarwarsInvaders:
         pygame.display.set_caption("StarWars Invaders")
 
     def run_game(self):
+        """Starts the main loop for gamplay"""
+        while true:
+            
