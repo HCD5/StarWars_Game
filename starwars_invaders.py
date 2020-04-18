@@ -14,5 +14,18 @@ class StarwarsInvaders:
 
     def run_game(self):
         """Starts the main loop for gamplay"""
-        while true:
-            
+        while True:
+            # Watch for input from the user
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    sys.exit()
+
+            # Update screen
+            pygame.display.flip()
+
+if __name__ == '__main__':
+    # Rum game
+    si = StarwarsInvaders()
+    si.run_game()
+
+    
