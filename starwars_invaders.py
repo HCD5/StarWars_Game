@@ -45,6 +45,8 @@ class StarwarsInvaders:
             self.ship.move_right = True
         if event.key == pygame.K_LEFT:
             self.ship.move_left = True
+        if event.key == pygame.K_q:
+            sys.exit()
 
 
     def check_keyup(self, event):
@@ -53,7 +55,6 @@ class StarwarsInvaders:
             self.ship.move_right = False
         if event.key == pygame.K_LEFT:
             self.ship.move_left = False
-
 
 
     def update_screen(self):
