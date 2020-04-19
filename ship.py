@@ -34,5 +34,5 @@ class Ship:
         # Update ships position
         self.rect.x = self.x
 
-    def placeShip(self):
+    def place_ship(self):
         self.screen.blit(self.image, self.rect)

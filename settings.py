@@ -9,5 +9,11 @@ class Settings:
         self.bg_color = (109, 29, 140)
 
         # Ship settings
-        self.ship_speed = 1.2
+        self.ship_speed = .5
+
+        # Laser settings
+        self.laser_speed = 1.0
+        self.laser_width = 3.0
+        self.laser_height = 30.0
+        self.laser_color = (255, 31, 31)
         

@@ -3,6 +3,7 @@ import pygame
 
 from settings import Settings
 from ship import Ship
+from laser import Laser
 
 class StarwarsInvaders:
     """Main class to manage gamplay"""
@@ -16,24 +17,29 @@ class StarwarsInvaders:
         pygame.display.set_caption("StarWars Invaders")
 
         self.ship = Ship(self)
+        self.lasers = pygame.sprite.Group()
 
 
     def run_game(self):
         """Starts the main loop for gamplay"""
         while True:
             self.check_events()
+            self.ship.update()
+            self.lasers.update()
             self.update_screen()
 
 
     def check_events(self):
         """Checks for user input"""
         for event in pygame.event.get():
+            # Check if user wants to exit
             if event.type == pygame.QUIT:
                 sys.exit()
 
             # Check for key down input
             elif event.type == pygame.KEYDOWN:
                 self.check_keydown(event)
+
             # Check for key up input 
             elif event.type == pygame.KEYUP:
                 self.check_keyup(event)
@@ -47,6 +53,8 @@ class StarwarsInvaders:
             self.ship.move_left = True
         if event.key == pygame.K_q:
             sys.exit()
+        if event.key == pygame.K_SPACE:
+            self.fire_laser()
 
 
     def check_keyup(self, event):
@@ -57,11 +65,18 @@ class StarwarsInvaders:
             self.ship.move_left = False
 
 
+    def fire_laser(self):
+        """Creates new laser and adds it to the lasers group"""
+        new_laser = Laser(self)
+        self.lasers.add(new_laser)
+
+
     def update_screen(self):
         """Updates image position on screen, and flip screen"""
         self.screen.fill(self.settings.bg_color)
-        self.ship.placeShip()
-        self.ship.update()
+        self.ship.place_ship()
+        for laser in self.lasers.sprites():
+            laser.place_laser()
 
         pygame.display.flip()
 
