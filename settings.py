@@ -1,5 +1,5 @@
 class Settings:
-    "Class to store all of the settings for the game"
+    """Class to store all of the settings for the game"""
 
     def __init__(self):
         "Initilize all of the games settings"
@@ -7,4 +7,7 @@ class Settings:
         self.screen_w = 1200
         self.screen_h = 800
         self.bg_color = (109, 29, 140)
+
+        # Ship settings
+        self.ship_speed = 1.2
         

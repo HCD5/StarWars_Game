@@ -31,19 +31,28 @@ class StarwarsInvaders:
             if event.type == pygame.QUIT:
                 sys.exit()
 
-            # Checks for key down input
+            # Check for key down input
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RIGHT:
-                    self.ship.move_right = True
-                if event.key == pygame.K_LEFT:
-                    self.ship.move_left = True
-
-            # Checks for key up input 
+                self.check_keydown(event)
+            # Check for key up input 
             elif event.type == pygame.KEYUP:
-                if event.key == pygame.K_RIGHT:
-                    self.ship.move_right = False
-                if event.key == pygame.K_LEFT:
-                    self.ship.move_left = False
+                self.check_keyup(event)
+           
+
+    def check_keydown(self, event):
+        """Checks for keydown events"""
+        if event.key == pygame.K_RIGHT:
+            self.ship.move_right = True
+        if event.key == pygame.K_LEFT:
+            self.ship.move_left = True
+
+
+    def check_keyup(self, event):
+        """Checks for keyup events"""
+        if event.key == pygame.K_RIGHT:
+            self.ship.move_right = False
+        if event.key == pygame.K_LEFT:
+            self.ship.move_left = False
 
 
 
