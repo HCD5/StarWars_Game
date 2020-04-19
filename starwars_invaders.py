@@ -25,7 +25,7 @@ class StarwarsInvaders:
         while True:
             self.check_events()
             self.ship.update()
-            self.lasers.update()
+            self.update_laser()
             self.update_screen()
 
 
@@ -67,13 +67,25 @@ class StarwarsInvaders:
 
     def fire_laser(self):
         """Creates new laser and adds it to the lasers group"""
-        new_laser = Laser(self)
-        self.lasers.add(new_laser)
+        if len(self.lasers) < self.settings.laser_amount:
+            new_laser = Laser(self)
+            self.lasers.add(new_laser)
+
+
+    def update_laser(self):
+        """Updates laser position and removes lasers that reach the edge of the screen"""
+        # Update lasers positions
+        self.lasers.update()
+
+        # Get rid of lasers that reach the edge of the screen
+        for laser in self.lasers.copy():
+            if laser.rect.bottom <=0:
+                self.lasers.remove(laser)
 
 
     def update_screen(self):
         """Updates image position on screen, and flip screen"""
-        self.screen.fill(self.settings.bg_color)
+        self.screen.blit(self.settings.background, (0,0))
         self.ship.place_ship()
         for laser in self.lasers.sprites():
             laser.place_laser()
