@@ -21,20 +21,43 @@ class StarwarsInvaders:
     def run_game(self):
         """Starts the main loop for gamplay"""
         while True:
-            # Watch for input from the user
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    sys.exit()
+            self.check_events()
+            self.update_screen()
 
-            # Update backround and ships positions
-            self.screen.fill(self.settings.bg_color)
-            self.ship.placeShip()
 
-            # Update screen
-            pygame.display.flip()
+    def check_events(self):
+        """Checks for user input"""
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                sys.exit()
+
+            # Checks for key down input
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RIGHT:
+                    self.ship.move_right = True
+                if event.key == pygame.K_LEFT:
+                    self.ship.move_left = True
+
+            # Checks for key up input 
+            elif event.type == pygame.KEYUP:
+                if event.key == pygame.K_RIGHT:
+                    self.ship.move_right = False
+                if event.key == pygame.K_LEFT:
+                    self.ship.move_left = False
+
+
+
+    def update_screen(self):
+        """Updates image position on screen, and flip screen"""
+        self.screen.fill(self.settings.bg_color)
+        self.ship.placeShip()
+        self.ship.update()
+
+        pygame.display.flip()
+
 
 if __name__ == '__main__':
-    # Rum game
+    # Run game
     si = StarwarsInvaders()
     si.run_game()
 
