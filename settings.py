@@ -8,7 +8,6 @@ class Settings:
         # Screen settings
         self.screen_w = 1200
         self.screen_h = 800
-        self.bg_color = (211,211,211)
         self.background = pygame.image.load('pictures/back.png')
         self.background = pygame.transform.smoothscale(self.background, (1200, 800))
 
@@ -21,5 +20,3 @@ class Settings:
         self.laser_height = 20
         self.laser_color = (255, 31, 31)
         self.laser_amount = 4
-
-        
