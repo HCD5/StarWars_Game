@@ -30,6 +30,7 @@ class StarwarsInvaders:
             self.check_events()
             self.ship.update()
             self.update_laser()
+            self.update_ties()
             self.update_screen()
 
 
@@ -91,22 +92,48 @@ class StarwarsInvaders:
         """Creates tie fighters and adds them to group """
           # Check to see how may tie fighters can fit in a row
         tie = TieFighter(self)
-        tie_width = tie.rect.width
-        available_space_x = self.settings.screen_w - (2 * tie_width)
+        tie_width, tie_height = tie.rect.size
+        available_space_x = self.settings.screen_w - (3 * tie_width)
         number_of_ties_x = available_space_x // (2 * tie_width)
 
+        # Find out how many rows fit on the screen
+        ship_height = self.ship.rect.height
+        available_space_y = (self.settings.screen_h - (3 * tie_height) - ship_height)
+        number_of_rows = available_space_y // (3 * tie_height)
+
         # Create the first row of tie fighters
-        for num_ties in range(number_of_ties_x):
-            self.create_tie(num_ties)
+        for row_number in range(number_of_rows):
+            for num_ties in range(number_of_ties_x):
+                self.create_tie(num_ties, row_number)
 
 
-    def create_tie(self, num_ties):
+    def create_tie(self, num_ties, number_of_rows):
+        """Creates tie fighter and adds it to group"""
         #Create tie and place in the row
         tie = TieFighter(self)
-        tie_width = tie.rect.width
+        tie_width, tie_height = tie.rect.size
         tie.x = tie_width + (2 * tie_width) * num_ties
         tie.rect.x = tie.x
+        tie.rect.y = tie_height + 2.5 * tie_height * number_of_rows
         self.tie_fighters.add(tie)
+    
+
+    def check_fleet_edges(self):
+        """Checks to see if the row has reached the end of the screen"""
+        for tie in self.tie_fighters.sprites():
+            if tie.check_edges():
+                self.change_fleet_direction()
+                break
+
+    def change_fleet_direction(self):
+        self.settings.fleet_direction *= -1
+        for tie in self.tie_fighters.sprites():
+            tie.rect.y += self.settings.fleet_drop_speed
+        
+
+    def update_ties(self):
+        self.check_fleet_edges()
+        self.tie_fighters.update()
 
 
     def update_screen(self):

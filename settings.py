@@ -20,3 +20,9 @@ class Settings:
         self.laser_height = 20
         self.laser_color = (255, 31, 31)
         self.laser_amount = 4
+
+        # Tie fighter settings
+        self.tie_speed = 2
+        self.fleet_drop_speed = 10
+        # 1 = right, -1 = left
+        self.fleet_direction = 1
