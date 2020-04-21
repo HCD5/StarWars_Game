@@ -12,17 +12,18 @@ class Settings:
         self.background = pygame.transform.smoothscale(self.background, (1200, 800))
 
         # Ship settings
-        self.ship_speed = 7
+        self.ship_speed = 10
+        self.ship_limit = 3
 
         # Laser settings
-        self.laser_speed = 6
+        self.laser_speed = 10
         self.laser_width = 3
         self.laser_height = 20
         self.laser_color = (255, 31, 31)
         self.laser_amount = 4
 
         # Tie fighter settings
-        self.tie_speed = 2
+        self.tie_speed = 12
         self.fleet_drop_speed = 10
         # 1 = right, -1 = left
         self.fleet_direction = 1

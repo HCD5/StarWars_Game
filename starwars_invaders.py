@@ -1,10 +1,12 @@
 import sys
 import pygame
+from time import sleep
 
 from settings import Settings
 from ship import Ship
 from laser import Laser
 from tie_fighter import TieFighter
+from game_stats import GameStats 
 
 class StarwarsInvaders:
     """Main class to manage gamplay"""
@@ -14,13 +16,17 @@ class StarwarsInvaders:
         pygame.init()
         self.settings = Settings()
 
+        # Initialize screen settings
         self.screen = pygame.display.set_mode((self.settings.screen_w, self.settings.screen_h))
         pygame.display.set_caption("StarWars Invaders")
 
+        # Initialize game statistics
+        self.stats = GameStats(self)
+
+        # Initialize gameplay elements
         self.ship = Ship(self)
         self.lasers = pygame.sprite.Group()
         self.tie_fighters = pygame.sprite.Group()
-
         self.create_fleet()
 
 
@@ -87,6 +93,19 @@ class StarwarsInvaders:
             if laser.rect.bottom <= 0:
                 self.lasers.remove(laser)
 
+        # Check for laser hitting ship
+        self.check_laser_tie_collision()
+
+
+    def check_laser_tie_collision(self):
+        """Check if laser has hit a tie fighter and creates new fleet if all ties are destroyed"""
+        collisions = pygame.sprite.groupcollide(self.lasers, self.tie_fighters, True, True)
+
+        #Create another fleet if all tie fighters are destroyed
+        if not self.tie_fighters:
+            self.lasers.empty()
+            self.create_fleet()
+
 
     def create_fleet(self):
         """Creates tie fighters and adds them to group """
@@ -116,7 +135,7 @@ class StarwarsInvaders:
         tie.rect.x = tie.x
         tie.rect.y = tie_height + 2.5 * tie_height * number_of_rows
         self.tie_fighters.add(tie)
-    
+   
 
     def check_fleet_edges(self):
         """Checks to see if the row has reached the end of the screen"""
@@ -125,15 +144,37 @@ class StarwarsInvaders:
                 self.change_fleet_direction()
                 break
 
+
     def change_fleet_direction(self):
+        """Changes the fleet direction and drops down tie fighters"""
         self.settings.fleet_direction *= -1
         for tie in self.tie_fighters.sprites():
             tie.rect.y += self.settings.fleet_drop_speed
-        
+
 
     def update_ties(self):
+        """Updates the position of the tie fighters"""
         self.check_fleet_edges()
         self.tie_fighters.update()
+
+        if pygame.sprite.spritecollideany(self.ship, self.tie_fighters):
+            self.ship_hit()
+
+    def ship_hit(self):
+        """Respond to the event of ship being hit"""
+        # Remove a ship from statistics
+        self.stats.ships_left -= 1
+
+        # Remove remaining tie fighters and lasers
+        self.tie_fighters.empty()
+        self.lasers.empty()
+
+        # Create new fleet and center ship
+        self.create_fleet()
+        self.ship.center_ship()
+
+        # Pause game
+        sleep(1)
 
 
     def update_screen(self):
