@@ -6,7 +6,9 @@ from settings import Settings
 from ship import Ship
 from laser import Laser
 from tie_fighter import TieFighter
-from game_stats import GameStats 
+from game_stats import GameStats
+from button import Button
+
 
 class StarwarsInvaders:
     """Main class to manage gamplay"""
@@ -29,13 +31,16 @@ class StarwarsInvaders:
         self.tie_fighters = pygame.sprite.Group()
         self.create_fleet()
 
+        # Create play button
+        self.play_button = Button(self, "Play")
+
 
     def run_game(self):
         """Starts the main loop for gamplay"""
         while True:
             self.check_events()
 
-            while self.stats.game_active:
+            if self.stats.game_active:
                 self.ship.update()
                 self.update_laser()
                 self.update_ties()
@@ -58,6 +63,11 @@ class StarwarsInvaders:
             elif event.type == pygame.KEYUP:
                 self.check_keyup(event)
 
+            # Check for mouse click
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = pygame.mouse.get_pos()
+                self.check_play_button(mouse_pos)
+
 
     def check_keydown(self, event):
         """Checks for keydown events"""
@@ -77,6 +87,22 @@ class StarwarsInvaders:
             self.ship.move_right = False
         if event.key == pygame.K_LEFT:
             self.ship.move_left = False
+
+
+    def check_play_button(self, mouse_pos):
+        """Start the game when the play button is pressed"""
+        if self.play_button.rect.collidepoint(mouse_pos):
+            # Reset statistics
+            self.stats.reset_stats()
+            self.stats.game_active = True
+
+            # Delete remaining tie fighters and lasers
+            self.tie_fighters.empty()
+            self.lasers.empty()
+
+            # Create new fleet and center ship
+            self.create_fleet()
+            self.ship.center_ship()
 
 
     def fire_laser(self):
@@ -138,7 +164,7 @@ class StarwarsInvaders:
         tie.rect.x = tie.x
         tie.rect.y = tie_height + 2.5 * tie_height * number_of_rows
         self.tie_fighters.add(tie)
-   
+
 
     def check_fleet_edges(self):
         """Checks to see if the row has reached the end of the screen"""
@@ -191,7 +217,7 @@ class StarwarsInvaders:
     def check_tie_bottom(self):
         """Check of the tie fighters have reached the bottom of the screen"""
         screen_rect = self.screen.get_rect()
-        for tie in self.tie_fighters():
+        for tie in self.tie_fighters.sprites():
             if tie.rect.bottom >= screen_rect.bottom:
                 self.ship_hit()
                 break
@@ -204,6 +230,10 @@ class StarwarsInvaders:
         for laser in self.lasers.sprites():
             laser.place_laser()
         self.tie_fighters.draw(self.screen)
+
+        # Draw play button if game is inactive
+        if not self.stats.game_active:
+            self.play_button.draw_button()
 
         pygame.display.flip()
 

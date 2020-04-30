@@ -7,7 +7,7 @@ class GameStats:
         self.reset_stats()
 
         # Create flag for gameplay to end
-        self.game_active = True
+        self.game_active = False
 
     def reset_stats(self):
         """Create statistics that will be tracked throughout the game"""
