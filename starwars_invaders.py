@@ -34,9 +34,12 @@ class StarwarsInvaders:
         """Starts the main loop for gamplay"""
         while True:
             self.check_events()
-            self.ship.update()
-            self.update_laser()
-            self.update_ties()
+
+            while self.stats.game_active:
+                self.ship.update()
+                self.update_laser()
+                self.update_ties()
+
             self.update_screen()
 
 
@@ -157,24 +160,41 @@ class StarwarsInvaders:
         self.check_fleet_edges()
         self.tie_fighters.update()
 
+        # Check if tie fighter collided with ship
         if pygame.sprite.spritecollideany(self.ship, self.tie_fighters):
             self.ship_hit()
 
+        # Check if tie fighter reached the bottom of the screen
+        self.check_tie_bottom()
+
+
     def ship_hit(self):
         """Respond to the event of ship being hit"""
-        # Remove a ship from statistics
-        self.stats.ships_left -= 1
+        if self.stats.ships_left > 0:
+            # Remove a ship from statistics
+            self.stats.ships_left -= 1
 
-        # Remove remaining tie fighters and lasers
-        self.tie_fighters.empty()
-        self.lasers.empty()
+            # Remove remaining tie fighters and lasers
+            self.tie_fighters.empty()
+            self.lasers.empty()
 
-        # Create new fleet and center ship
-        self.create_fleet()
-        self.ship.center_ship()
+            # Create new fleet and center ship
+            self.create_fleet()
+            self.ship.center_ship()
 
-        # Pause game
-        sleep(1)
+            # Pause game
+            sleep(1)
+        else:
+            self.stats.game_active = False
+
+
+    def check_tie_bottom(self):
+        """Check of the tie fighters have reached the bottom of the screen"""
+        screen_rect = self.screen.get_rect()
+        for tie in self.tie_fighters():
+            if tie.rect.bottom >= screen_rect.bottom:
+                self.ship_hit()
+                break
 
 
     def update_screen(self):
