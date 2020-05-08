@@ -24,6 +24,7 @@ class Scoreboard:
         self.prep_level()
         self.prep_ships()
 
+
     def prep_score(self):
         """Turn players score into image"""
         rounded_score = round(self.stats.score, -1)
@@ -34,6 +35,7 @@ class Scoreboard:
         self.score_rect = self.score_image.get_rect()
         self.score_rect.right = self.screen_rect.right - 20
         self.score_rect.top = 20
+
 
     def prep_high_score(self):
         """"Turn players highscore into an image"""

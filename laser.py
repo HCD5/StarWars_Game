@@ -29,6 +29,3 @@ class Laser(Sprite):
     def place_laser(self):
         """Draw laser on the screen"""
         pygame.draw.rect(self.screen,self.color, self.rect)
-    
-
-

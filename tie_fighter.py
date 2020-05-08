@@ -29,6 +29,7 @@ class TieFighter(Sprite):
         self.x += (self.settings.tie_speed * self.settings.fleet_direction)
         self.rect.x = self.x
 
+
     def check_edges(self):
         """Checks to see if a tie has reached the edge of the screen"""
         screen_rect = self.screen.get_rect()

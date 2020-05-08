@@ -25,11 +25,13 @@ class Ship(Sprite):
         # Movement flags
         self.move_right = False
         self.move_left = False
-    
+        
+
     def center_ship(self):
         """Places the ship at the bottom center of the screen"""
         self.rect.midbottom = self.screen_rect.midbottom
         self.x = float(self.rect.x)
+
 
     def update(self):
         """Update the ships position based on the current movement flag"""
@@ -40,6 +42,7 @@ class Ship(Sprite):
 
         # Update ships position
         self.rect.x = self.x
+
 
     def place_ship(self):
         self.screen.blit(self.image, self.rect)

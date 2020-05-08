@@ -12,6 +12,7 @@ class GameStats:
         # High score
         self.high_score = 0
 
+
     def reset_stats(self):
         """Create statistics that will be tracked throughout the game"""
         self.ships_left = self.settings.ship_limit
