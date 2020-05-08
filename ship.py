@@ -1,10 +1,12 @@
 import pygame
+from pygame.sprite import Sprite
 
-class Ship:
+class Ship(Sprite):
     """A Class to display and contol the user ship"""
 
     def __init__(self, si_game):
         """Create the ship and set its starting position"""
+        super().__init__()
         self.screen = si_game.screen
         self.settings = si_game.settings
         self.screen_rect = si_game.screen.get_rect()
@@ -17,7 +19,7 @@ class Ship:
         # Place the ships starting position at the bottom middle of the screen
         self.rect.midbottom = self.screen_rect.midbottom
 
-        # Create float variable for ships x position 
+        # Create float variable for ships x position
         self.x = float(self.rect.x)
 
         # Movement flags

@@ -8,6 +8,7 @@ from laser import Laser
 from tie_fighter import TieFighter
 from game_stats import GameStats
 from button import Button
+from scoreboard import Scoreboard
 
 
 class StarwarsInvaders:
@@ -22,8 +23,9 @@ class StarwarsInvaders:
         self.screen = pygame.display.set_mode((self.settings.screen_w, self.settings.screen_h))
         pygame.display.set_caption("StarWars Invaders")
 
-        # Initialize game statistics
+        # Initialize game statistics and scoreboard
         self.stats = GameStats(self)
+        self.sb = Scoreboard(self)
 
         # Initialize gameplay elements
         self.ship = Ship(self)
@@ -91,10 +93,15 @@ class StarwarsInvaders:
 
     def check_play_button(self, mouse_pos):
         """Start the game when the play button is pressed"""
-        if self.play_button.rect.collidepoint(mouse_pos):
+        button_clicked = self.play_button.rect.collidepoint(mouse_pos)
+        if button_clicked and not self.stats.game_active:
             # Reset statistics
+            self.settings.initilize_dynamic_settings()
             self.stats.reset_stats()
             self.stats.game_active = True
+            self.sb.prep_score()
+            self.sb.prep_level()
+            self.sb.prep_ships()
 
             # Delete remaining tie fighters and lasers
             self.tie_fighters.empty()
@@ -103,6 +110,9 @@ class StarwarsInvaders:
             # Create new fleet and center ship
             self.create_fleet()
             self.ship.center_ship()
+
+            # Hide cursor
+            pygame.mouse.set_visible(False)
 
 
     def fire_laser(self):
@@ -130,10 +140,21 @@ class StarwarsInvaders:
         """Check if laser has hit a tie fighter and creates new fleet if all ties are destroyed"""
         collisions = pygame.sprite.groupcollide(self.lasers, self.tie_fighters, True, True)
 
+        # Increment points if tie is hit
+        if collisions:
+            for ties in collisions.values():
+                self.stats.score += self.settings.tie_points * len(ties)
+            self.sb.prep_score()
+            self.sb.check_high_score()
+
         #Create another fleet if all tie fighters are destroyed
         if not self.tie_fighters:
             self.lasers.empty()
             self.create_fleet()
+            self.settings.increase_speed()
+
+            self.stats.level += 1
+            self.sb.prep_level()
 
 
     def create_fleet(self):
@@ -199,6 +220,7 @@ class StarwarsInvaders:
         if self.stats.ships_left > 0:
             # Remove a ship from statistics
             self.stats.ships_left -= 1
+            self.sb.prep_ships()
 
             # Remove remaining tie fighters and lasers
             self.tie_fighters.empty()
@@ -212,6 +234,7 @@ class StarwarsInvaders:
             sleep(1)
         else:
             self.stats.game_active = False
+            pygame.mouse.set_visible(True)
 
 
     def check_tie_bottom(self):
@@ -225,11 +248,21 @@ class StarwarsInvaders:
 
     def update_screen(self):
         """Updates image position on screen, and flip screen"""
+        # Background
         self.screen.blit(self.settings.background, (0, 0))
+
+        # Ship
         self.ship.place_ship()
+
+        # Lasers
         for laser in self.lasers.sprites():
             laser.place_laser()
+
+        # Tie fighters
         self.tie_fighters.draw(self.screen)
+
+        # Scoreboard
+        self.sb.display_score()
 
         # Draw play button if game is inactive
         if not self.stats.game_active:
